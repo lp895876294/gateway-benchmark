@@ -8,7 +8,7 @@ jmx:
 hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 8000
 
 mvc :
-  url :  http://localhost:9000/
+  url :  http://10.1.1.146:9000/
 
 logging :
   level:

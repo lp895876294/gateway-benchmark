@@ -1,23 +1,21 @@
 server:
   port: 7020
   tomcat:
-    maxThreads: 200
-    minSpareThreads : 200
-    maxConnections: 200
-    acceptCount: 200
-
-mvc.path :
+    maxThreads: 400
+    minSpareThreads : 400
+    maxConnections: 400
+    acceptCount: 400
 
 zuul:
   host:
     maxTotalConnections: 400
-    maxPerRouteConnections: 200
+    maxPerRouteConnections: 400
     connect-timeout-millis: 8000
     socket-timeout-millis: 10000
   routes:
     api-zull:
       path: /**
-      url: http://localhost:9000/
+      url: http://10.1.1.146:9000/
 
 jmx:
   rmi:
