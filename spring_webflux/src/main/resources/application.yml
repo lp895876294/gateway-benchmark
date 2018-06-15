@@ -1,0 +1,6 @@
+server:
+  port: 9010
+
+jmx:
+  rmi:
+    port: 19010

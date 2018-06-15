@@ -1,0 +1,11 @@
+server:
+  port: 9000
+  tomcat:
+    maxThreads: 200
+    minSpareThreads : 200
+    maxConnections: 200
+    acceptCount: 200
+
+jmx:
+  rmi:
+    port: 19000

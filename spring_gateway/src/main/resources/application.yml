@@ -1,0 +1,15 @@
+server:
+  port: 7010
+
+jmx:
+  rmi:
+    port: 17010
+
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 8000
+
+mvc :
+  url :  http://localhost:9000/
+
+logging :
+  level:
+    org.springframework.cloud.gateway : INFO
