@@ -21,6 +21,7 @@
 		<module>spring_webflux</module>
         <module>spring_webmvc</module>
         <module>spring_zuul_gateway</module>
+        <module>zuul2</module>
 	</modules>
 
     <dependencyManagement>
