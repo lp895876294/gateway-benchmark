@@ -17,6 +17,8 @@
 package com.framework.sc.zuul2;
 
 import com.google.inject.AbstractModule;
+import com.netflix.appinfo.EurekaInstanceConfig;
+import com.netflix.appinfo.MyDataCenterInstanceConfig;
 import com.netflix.discovery.AbstractDiscoveryClientOptionalArgs;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.netty.common.accesslog.AccessLogPublisher;
@@ -28,7 +30,6 @@ import com.netflix.zuul.FilterFileManager;
 import com.netflix.zuul.RequestCompleteHandler;
 import com.netflix.zuul.context.SessionContextDecorator;
 import com.netflix.zuul.context.ZuulSessionContextDecorator;
-import com.netflix.zuul.init.ZuulFiltersModule;
 import com.netflix.zuul.netty.server.BaseServerStartup;
 import com.netflix.zuul.netty.server.ClientRequestReceiver;
 import com.netflix.zuul.origins.BasicNettyOriginManager;
@@ -45,6 +46,8 @@ import com.netflix.zuul.stats.RequestMetricsPublisher;
 public class ZuulSampleModule extends AbstractModule {
     @Override
     protected void configure() {
+        bind(EurekaInstanceConfig.class).to(MyDataCenterInstanceConfig.class) ;
+
         // sample specific bindings
         bind(BaseServerStartup.class).to(SampleServerStartup.class);
 
@@ -52,7 +55,7 @@ public class ZuulSampleModule extends AbstractModule {
         bind(OriginManager.class).to(BasicNettyOriginManager.class);
 
         // zuul filter loading
-        install(new ZuulFiltersModule());
+        install(new TestZuulFiltersModule()) ;
         bind(FilterFileManager.class).asEagerSingleton();
 
         // general server bindings
