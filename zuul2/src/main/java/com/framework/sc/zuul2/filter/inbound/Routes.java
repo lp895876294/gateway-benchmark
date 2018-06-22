@@ -18,9 +18,10 @@ package com.framework.sc.zuul2.filter.inbound;
 
 import com.framework.sc.zuul2.filter.endpoint.Healthcheck;
 import com.netflix.zuul.context.SessionContext;
-import com.netflix.zuul.filters.http.HttpInboundSyncFilter;
+import com.netflix.zuul.filters.http.HttpInboundFilter;
 import com.netflix.zuul.message.http.HttpRequestMessage;
 import com.netflix.zuul.netty.filter.ZuulEndPointRunner;
+import rx.Observable;
 
 /**
  * Routes configuration
@@ -28,37 +29,15 @@ import com.netflix.zuul.netty.filter.ZuulEndPointRunner;
  * Author: Arthur Gonigberg
  * Date: November 21, 2017
  */
-public class Routes extends HttpInboundSyncFilter {
+public class Routes extends HttpInboundFilter {
 
     @Override
     public int filterOrder() {
         return 0 ;
     }
 
-//    @Override
-//    public Observable<HttpRequestMessage> applyAsync(HttpRequestMessage request) {
-//        SessionContext context = request.getContext() ;
-//        String path = request.getPath() ;
-//        String host = request.getOriginalHost() ;
-//
-//        // Route healthchecks to the healthcheck endpoint.;
-//        if (path.equalsIgnoreCase("/healthcheck")) {
-//            context.setEndpoint(Healthcheck.class.getCanonicalName());
-//        }else {
-//            context.setEndpoint(ZuulEndPointRunner.PROXY_ENDPOINT_FILTER_NAME);
-//            context.setRouteVIP("api") ;
-//        }
-//
-//        return Observable.just( request ) ;
-//    }
-
     @Override
-    public boolean shouldFilter(HttpRequestMessage httpRequestMessage) {
-        return true ;
-    }
-
-    @Override
-    public HttpRequestMessage apply(HttpRequestMessage request) {
+    public Observable<HttpRequestMessage> applyAsync(HttpRequestMessage request) {
         SessionContext context = request.getContext() ;
         String path = request.getPath() ;
         String host = request.getOriginalHost() ;
@@ -71,6 +50,28 @@ public class Routes extends HttpInboundSyncFilter {
             context.setRouteVIP("api") ;
         }
 
-        return request ;
+        return Observable.just( request ) ;
     }
+
+    @Override
+    public boolean shouldFilter(HttpRequestMessage httpRequestMessage) {
+        return true ;
+    }
+
+//    @Override
+//    public HttpRequestMessage apply(HttpRequestMessage request) {
+//        SessionContext context = request.getContext() ;
+//        String path = request.getPath() ;
+//        String host = request.getOriginalHost() ;
+//
+//        // Route healthchecks to the healthcheck endpoint.;
+//        if (path.equalsIgnoreCase("/healthcheck")) {
+//            context.setEndpoint(Healthcheck.class.getCanonicalName());
+//        }else {
+//            context.setEndpoint(ZuulEndPointRunner.PROXY_ENDPOINT_FILTER_NAME);
+//            context.setRouteVIP("api") ;
+//        }
+//
+//        return request ;
+//    }
 }
