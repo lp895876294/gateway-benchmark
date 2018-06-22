@@ -15,21 +15,25 @@
  */
 package com.framework.sc.zuul2;
 
-import com.netflix.zuul.BasicFilterUsageNotifier;
-import com.netflix.zuul.DynamicCodeCompiler;
-import com.netflix.zuul.FilterFactory;
-import com.netflix.zuul.FilterUsageNotifier;
+import com.framework.sc.zuul2.filter.endpoint.Healthcheck;
+import com.framework.sc.zuul2.filter.inbound.Routes;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.netflix.zuul.*;
 import com.netflix.zuul.guice.GuiceFilterFactory;
-import com.netflix.zuul.init.ZuulFiltersModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * User: michaels@netflix.com
  * Date: 5/8/15
  * Time: 6:15 PM
  */
-public class TestZuulFiltersModule extends ZuulFiltersModule {
+public class TestZuulFiltersModule extends AbstractModule {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestZuulFiltersModule.class) ;
 
@@ -45,4 +49,21 @@ public class TestZuulFiltersModule extends ZuulFiltersModule {
 
         LOG.info("Groovy Filter file manager started");
     }
+
+    @Provides
+    public FilterFileManager.FilterFileManagerConfig provideFilterFileManagerConfig() {
+
+        List<String> classNames = Lists.newArrayList(
+                Healthcheck.class.getName() ,
+                Routes.class.getName()
+        ) ;
+        // Init the FilterStore.
+        FilterFileManager.FilterFileManagerConfig filterConfig = new FilterFileManager.FilterFileManagerConfig(
+                new String[]{}, classNames.toArray( new String[]{} ) , 5) ;
+
+        LOG.info("加载filter->{}" , Joiner.on(",").join( classNames )) ;
+
+        return filterConfig;
+    }
+
 }

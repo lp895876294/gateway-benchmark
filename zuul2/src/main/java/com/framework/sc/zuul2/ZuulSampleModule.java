@@ -56,6 +56,7 @@ public class ZuulSampleModule extends AbstractModule {
 
         // zuul filter loading
         install(new TestZuulFiltersModule()) ;
+
         bind(FilterFileManager.class).asEagerSingleton();
 
         // general server bindings

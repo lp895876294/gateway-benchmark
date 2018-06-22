@@ -86,6 +86,7 @@ public class SampleServerStartup extends BaseServerStartup {
              * and passes XFF headers.
              */
             case HTTP :
+                //允许请求头中中x-forward-for属性
                 channelConfig.set(CommonChannelConfigKeys.allowProxyHeadersWhen, StripUntrustedProxyHeadersHandler.AllowWhen.ALWAYS);
                 channelConfig.set(CommonChannelConfigKeys.preferProxyProtocolForClientIp, false);
                 channelConfig.set(CommonChannelConfigKeys.isSSlFromIntermediary, false);
