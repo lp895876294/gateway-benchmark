@@ -5,47 +5,43 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.1.RELEASE</version>
+        <groupId>com.framework.gateway</groupId>
+        <artifactId>gateway-benchmark</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
 
-	<groupId>com.framework.gateway</groupId>
-    <artifactId>gateway-benchmark</artifactId>
+    <artifactId>spring_netty</artifactId>
 
-    <packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
+    <dependencies>
 
-	<modules>
-        <module>spring_gateway</module>
-		<module>spring_webflux</module>
-        <module>spring_webmvc</module>
-        <module>spring_zuul_gateway</module>
-        <module>zuul2</module>
-        <module>netty</module>
-        <module>spring_netty</module>
-	</modules>
+        <!--通用配置依赖-->
+        <dependency>
+            <groupId>com.framework</groupId>
+            <artifactId>framework_common</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
 
-    <dependencyManagement>
-        <dependencies>
-            <!--spring cloud依赖-->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.RC2</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!--spring cloud gateway依赖-->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-gateway</artifactId>
-                <version>2.0.0.RC2</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.25.Final</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <repository>
@@ -77,6 +73,5 @@
             <url>http://maven.fosung.com/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
 
 </project>

@@ -1,4 +1,4 @@
-package com.framework.sc.webmvc;
+package com.framework.sc.netty;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
