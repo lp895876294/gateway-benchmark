@@ -4,7 +4,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
-import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class GWChannelInitializer extends ChannelInitializer<SocketChannel> {
     private List<GWChannelHandler> channelHandlers ;
 
     public GWChannelInitializer(List<GWChannelHandler> channelHandlers){
-        Assert.notEmpty( channelHandlers , "channelHandlers不能为空" );
+//        Assert.notEmpty( channelHandlers , "channelHandlers不能为空" );
         this.channelHandlers = channelHandlers ;
     }
         

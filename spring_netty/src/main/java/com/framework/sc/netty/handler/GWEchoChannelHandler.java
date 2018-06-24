@@ -1,6 +1,5 @@
 package com.framework.sc.netty.handler;
 
-import com.framework.common.json.JsonMapper;
 import com.framework.common.util.UtilString;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -20,15 +19,15 @@ public class GWEchoChannelHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        log.info("server -> read and flush"); ;
+//        log.info("server -> read and flush"); ;
         ctx.flush();
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("server -> read") ;
+//        log.info("server -> read") ;
         if (!( msg instanceof HttpRequest )) {
-            log.error("{} , not a http request , {}" , JsonMapper.toJSONString( msg ) , msg.getClass().getName()) ;
+//            log.error("{} , not a http request , {}" , JsonMapper.toJSONString( msg ) , msg.getClass().getName()) ;
             return ;
         }
 
@@ -55,16 +54,16 @@ public class GWEchoChannelHandler extends ChannelInboundHandlerAdapter implement
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes()) ;
 
         if (!keepAlive) {
-            log.info("server -> not keep alive");
+//            log.info("server -> not keep alive");
             ctx.write(response).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) {
                     future.channel().close();
-                    log.info("server -> closed");
+//                    log.info("server -> closed");
                 }
             });
         } else {
-            log.info("server -> key alive");
+//            log.info("server -> key alive");
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             ctx.write(response);
         }
@@ -74,7 +73,7 @@ public class GWEchoChannelHandler extends ChannelInboundHandlerAdapter implement
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.info("server -> exception");
+//        log.info("server -> exception");
         cause.printStackTrace();
         ctx.close();
     }
