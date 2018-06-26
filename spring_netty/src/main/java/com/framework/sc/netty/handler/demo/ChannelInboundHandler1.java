@@ -74,9 +74,9 @@ public class ChannelInboundHandler1 extends BaseChannelInboundHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-//        super.exceptionCaught(ctx, cause);
-        log.info("exceptionCaught -> " + ctx.channel().id().asLongText() );
-        cause.printStackTrace();
-        ctx.close();
+        super.exceptionCaught(ctx, cause);
+//        log.info("exceptionCaught -> " + ctx.channel().id().asLongText() );
+//        cause.printStackTrace();
+//        ctx.close();
     }
 }

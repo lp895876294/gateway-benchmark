@@ -5,13 +5,12 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@Order(Ordered.LOWEST_PRECEDENCE )
+@Order(3)
 @ChannelHandler.Sharable
 public class ChannelInboundHandler3 extends ChannelInboundHandlerAdapter implements GWChannelHandler {
 
@@ -25,5 +24,14 @@ public class ChannelInboundHandler3 extends ChannelInboundHandlerAdapter impleme
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
         super.channelWritabilityChanged(ctx);
         log.info("ChannelInboundHandler3 -> channelWritabilityChanged ");
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+//        super.exceptionCaught(ctx, cause);
+        log.info("拦截inbound中所有异常 -> " + ctx.channel().id().asLongText() );
+        System.out.println("已经已经拦截，开始打印异常->");
+        cause.printStackTrace();
+        ctx.close();
     }
 }
