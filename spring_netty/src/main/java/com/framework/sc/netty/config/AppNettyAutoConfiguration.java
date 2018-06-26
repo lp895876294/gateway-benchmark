@@ -4,7 +4,7 @@ import com.framework.common.json.JsonMapper;
 import com.framework.sc.netty.handler.GWChannelHandler;
 import com.framework.sc.netty.handler.GWChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -42,19 +42,20 @@ public class AppNettyAutoConfiguration implements InitializingBean {
 
         // Configure the server.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(50);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(4);
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    .localAddress(appNettyProperties.getPort())
                     .childHandler(new GWChannelInitializer(this.gwChannelHandlers)) ;
 
-            Channel ch = b.bind( appNettyProperties.getPort() ).sync().channel() ;
+            ChannelFuture channelFuture = b.bind().sync() ;
 
             log.info("netty server -> connection is ok");
 
-            ch.closeFuture().sync();
+            channelFuture.channel().closeFuture().sync() ;
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
