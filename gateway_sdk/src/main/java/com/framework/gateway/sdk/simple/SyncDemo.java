@@ -8,8 +8,8 @@ public class SyncDemo {
 
     public SyncDemo() {
         this.syncClient = SyncApiClient.newBuilder()
-                .appKey("your app key here")
-                .appSecret("your app secret here")
+                .appKey("123456")
+                .appSecret("123456789")
                 .build();
     }
 

@@ -12,12 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.collections4.MapUtils;
 
 /**
  * api请求类
  *
  */
+@Getter
+@Setter
+@ToString
 public final class ApiRequest implements Serializable, Cloneable {
 
     public ApiRequest(Scheme scheme, Method method, String host, String path) {
@@ -53,41 +59,6 @@ public final class ApiRequest implements Serializable, Cloneable {
 
     private byte[] body;
 
-    public Scheme getScheme() {
-        return scheme;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public Map<String, String> getPathParams() {
-        return pathParams;
-    }
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public Map<String, String> getQuerys() {
-        return querys;
-    }
-
-    public Map<String, String> getFormParams() {
-        return formParams;
-    }
-
-    public byte[] getBody() {
-        return body;
-    }
 
     public void addParam(String name, Object value, ParamPosition position, boolean isRequired) {
         if (value == null) {
@@ -154,54 +125,4 @@ public final class ApiRequest implements Serializable, Cloneable {
         this.formParams.put(name, value);
     }
 
-    @Override
-    public String toString() {
-        return "ApiRequest{" +
-            "scheme=" + scheme +
-            ", method=" + method +
-            ", host='" + host + '\'' +
-            ", path='" + path + '\'' +
-            ", pathParams=" + pathParams +
-            ", headers=" + headers +
-            ", querys=" + querys +
-            ", formParams=" + formParams +
-            ", body=" + Arrays.toString(body) +
-            '}';
-    }
-
-    public void setScheme(Scheme scheme) {
-        this.scheme = scheme;
-    }
-
-    public void setMethod(Method method) {
-        this.method = method;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPathParams(Map<String, String> pathParams) {
-        this.pathParams = pathParams;
-    }
-
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    public void setQuerys(Map<String, String> querys) {
-        this.querys = querys;
-    }
-
-    public void setFormParams(Map<String, String> formParams) {
-        this.formParams = formParams;
-    }
-
-    public void setBody(byte[] body) {
-        this.body = body;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }
