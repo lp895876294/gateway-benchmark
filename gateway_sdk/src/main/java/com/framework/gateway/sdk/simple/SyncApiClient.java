@@ -17,7 +17,7 @@ public final class SyncApiClient extends BaseApiClient {
     /**
      * 这里配置网关地址
      */
-    public final static String GATEWAY_API_HOST = "localhost:8380";
+    public final static String GATEWAY_API_HOST = "localhost:8081";
 
     private SyncApiClient(BuilderParams builderParams) {
         super(builderParams);
@@ -41,7 +41,7 @@ public final class SyncApiClient extends BaseApiClient {
     }
 
     public ApiResponse apiId(String apiId) {
-        String serverParamGetPath = "/api/server/param/get";
+        String serverParamGetPath = "/sign";
 
         ApiRequest apiRequest = new ApiRequest(Scheme.HTTP, Method.POST_BODY, GATEWAY_API_HOST, serverParamGetPath);
 
