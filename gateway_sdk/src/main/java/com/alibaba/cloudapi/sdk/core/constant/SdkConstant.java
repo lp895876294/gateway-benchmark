@@ -16,6 +16,11 @@ public class SdkConstant {
      * 所有参与签名的Header
      */
     public static final String CLOUDAPI_X_CA_SIGNATURE_HEADERS = "X-Ca-Signature-Headers";
+
+    /**
+     * 签名认证方式 {@link SignatureType}
+     */
+    public static final String X_CA_SIGNATURE_TYPE = "X-Ca-Signature-Type";
     /**
      * 请求时间戳
      */
@@ -31,7 +36,7 @@ public class SdkConstant {
     /**
      * 签名版本号
      */
-    public static final String CLOUDAPI_X_CA_VERSION = "CA_VERSION";
+    public static final String CLOUDAPI_X_CA_VERSION = "X-Ca-Version";
 
     /**
      * 编码UTF-8
@@ -59,5 +64,5 @@ public class SdkConstant {
     /**
      * 签名版本号
      */
-    public static final String CLOUDAPI_CA_VERSION_VALUE = "1";
+    public static final String CLOUDAPI_CA_VERSION_VALUE = "3";
 }

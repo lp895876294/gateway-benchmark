@@ -42,11 +42,15 @@ public final class SyncApiClient extends BaseApiClient {
 
     public ApiResponse apiId(String apiId) {
         String serverParamGetPath = "/sign";
-
         ApiRequest apiRequest = new ApiRequest(Scheme.HTTP, Method.POST_BODY, GATEWAY_API_HOST, serverParamGetPath);
-
         apiRequest.addParam("apiId", apiId, ParamPosition.QUERY, true);
+        return syncInvoke(apiRequest);
+    }
 
+    public ApiResponse index(String apiId) {
+        String serverParamGetPath = "/index";
+        ApiRequest apiRequest = new ApiRequest(Scheme.HTTP, Method.POST_BODY, GATEWAY_API_HOST, serverParamGetPath);
+        apiRequest.addParam("apiId", apiId, ParamPosition.QUERY, true);
         return syncInvoke(apiRequest);
     }
 

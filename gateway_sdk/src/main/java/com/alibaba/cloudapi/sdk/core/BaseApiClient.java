@@ -1,5 +1,20 @@
 package com.alibaba.cloudapi.sdk.core;
 
+import com.alibaba.cloudapi.sdk.core.constant.HttpConstant;
+import com.alibaba.cloudapi.sdk.core.constant.SdkConstant;
+import com.alibaba.cloudapi.sdk.core.exception.SdkClientException;
+import com.alibaba.cloudapi.sdk.core.http.HttpClientFactory;
+import com.alibaba.cloudapi.sdk.core.model.ApiCallBack;
+import com.alibaba.cloudapi.sdk.core.model.ApiRequest;
+import com.alibaba.cloudapi.sdk.core.model.ApiResponse;
+import com.alibaba.cloudapi.sdk.core.model.BuilderParams;
+import com.alibaba.cloudapi.sdk.core.util.Sign2Util;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,25 +26,8 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.cloudapi.sdk.core.constant.HttpConstant;
-import com.alibaba.cloudapi.sdk.core.constant.SdkConstant;
-import com.alibaba.cloudapi.sdk.core.exception.SdkClientException;
-import com.alibaba.cloudapi.sdk.core.http.HttpClientFactory;
-import com.alibaba.cloudapi.sdk.core.model.ApiCallBack;
-import com.alibaba.cloudapi.sdk.core.model.ApiRequest;
-import com.alibaba.cloudapi.sdk.core.model.ApiResponse;
-import com.alibaba.cloudapi.sdk.core.model.BuilderParams;
-import com.alibaba.cloudapi.sdk.core.util.SignUtil;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * apiClient基类
- *
  */
 public abstract class BaseApiClient {
 
@@ -38,7 +36,7 @@ public abstract class BaseApiClient {
     private final HttpClient httpClient;
 
     protected final static Map<Class<? extends BaseApiClient>, BaseApiClient> instanceMap
-        = new ConcurrentHashMap<Class<? extends BaseApiClient>, BaseApiClient>();
+            = new ConcurrentHashMap<Class<? extends BaseApiClient>, BaseApiClient>();
 
     public BaseApiClient(BuilderParams builderParams) {
         this.appKey = builderParams.getAppKey();
@@ -46,11 +44,11 @@ public abstract class BaseApiClient {
         this.httpClient = HttpClientFactory.buildClient(builderParams);
     }
 
-    protected static <T extends BaseApiClient> T getApiClassInstance(Class<T> tClass){
-        if(!instanceMap.containsKey(tClass)){
+    protected static <T extends BaseApiClient> T getApiClassInstance(Class<T> tClass) {
+        if (!instanceMap.containsKey(tClass)) {
             throw new SdkClientException("please build one apiClient first before invoking getInstance()");
         }
-        return (T)instanceMap.get(tClass);
+        return (T) instanceMap.get(tClass);
     }
 
     private ApiRequest buildSDKRequest(ApiRequest apiReq) {
@@ -76,7 +74,8 @@ public abstract class BaseApiClient {
         /*
          * 请求放重放Nonce,15分钟内保持唯一,建议使用UUID
          */
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_NONCE, UUID.randomUUID().toString());
+        String nonceStr = UUID.randomUUID().toString();
+        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_NONCE, nonceStr);
 
         /*
          * 设置请求头中的UserAgent
@@ -101,8 +100,7 @@ public abstract class BaseApiClient {
         /*
          * 设置请求数据类型
          */
-        apiReq.getHeaders().put(HttpConstant.CLOUDAPI_HTTP_HEADER_CONTENT_TYPE,
-            apiReq.getMethod().getRequestContentType());
+        apiReq.getHeaders().put(HttpConstant.CLOUDAPI_HTTP_HEADER_CONTENT_TYPE, apiReq.getMethod().getRequestContentType());
 
         /*
          * 设置应答数据类型
@@ -116,24 +114,24 @@ public abstract class BaseApiClient {
              *  做内容校验，避免内容在网络中被篡改
              */
             apiReq.getHeaders().put(HttpConstant.CLOUDAPI_HTTP_HEADER_CONTENT_MD5,
-                getMD5WithBase64Encode(apiReq.getBody()));
+                    getMD5WithBase64Encode(apiReq.getBody()));
         }
 
         /*
          *  将Request中的httpMethod、headers、path、queryParam、formParam合成一个字符串用hmacSha256算法双向加密进行签名
          *  签名内容放到Http头中，用作服务器校验
          */
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_SIGNATURE, SignUtil
-            .sign(apiReq.getMethod().getName(), appSecret, apiReq.getHeaders(), pathWithPathParameter,
-                apiReq.getQuerys(), apiReq.getFormParams()));
+        String signStr = Sign2Util.sign(appKey, appSecret, current.getTime(), nonceStr);
+        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_SIGNATURE, signStr);
+
+        apiReq.getHeaders().put(SdkConstant.X_CA_SIGNATURE_TYPE, "ACCESSKEY");
 
         for (Map.Entry<String, String> entry : apiReq.getHeaders().entrySet()) {
 
             // 因http协议头使用ISO-8859-1字符集，不支持中文，所以需要将header中的中文通过UTF-8.encode()，再使用ISO-8859-1.decode()后传输对应的，
             // 服务器端需要将所有header使用ISO-8859-1.encode()，再使用UTF-8.decode()，以还原中文
             if (StringUtils.isNotEmpty(entry.getValue())) {
-                entry.setValue(new String(entry.getValue().getBytes(SdkConstant.CLOUDAPI_ENCODING),
-                    SdkConstant.CLOUDAPI_HEADER_ENCODING));
+                entry.setValue(new String(entry.getValue().getBytes(SdkConstant.CLOUDAPI_ENCODING),SdkConstant.CLOUDAPI_HEADER_ENCODING));
             }
         }
 
@@ -197,9 +195,9 @@ public abstract class BaseApiClient {
         }
     }
 
-    public void shutdown(){
+    public void shutdown() {
         IOUtils.closeQuietly(this.httpClient);
-        if(getApiClassInstance(this.getClass()) == this){
+        if (getApiClassInstance(this.getClass()) == this) {
             instanceMap.remove(this.getClass());
         }
     }

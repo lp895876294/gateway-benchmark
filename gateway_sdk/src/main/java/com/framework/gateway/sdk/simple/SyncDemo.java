@@ -14,7 +14,9 @@ public class SyncDemo {
     }
 
     public void aaaaaaDemo() {
-        ApiResponse response = syncClient.apiId("1");
+        ApiResponse response = syncClient.index("1");
+        printResponse(response);
+        response = syncClient.apiId("1");
         printResponse(response);
     }
 
