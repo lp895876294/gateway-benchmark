@@ -9,7 +9,7 @@ public class SyncDemo {
     public SyncDemo() {
         this.syncClient = SyncApiClient.newBuilder()
                 .appKey("123456")
-                .appSecret("123456789")
+                .appSecret("123456789123")
                 .build();
     }
 
