@@ -16,7 +16,6 @@ import java.util.List;
  * @author fred
  * @date 16/9/7
  */
-@Slf4j
 public class Sign2Util {
 
     /**
@@ -53,11 +52,7 @@ public class Sign2Util {
     private static String encrypt(String signatureText) {
         //对签名文本进行2次md5加密
         String signature = DigestUtils.md5DigestAsHex(signatureText.getBytes());
-
         signature = DigestUtils.md5DigestAsHex(signature.getBytes());
-
-        log.debug("签名文本加密后:{}", signature);
-
         return signature;
     }
 
@@ -89,15 +84,8 @@ public class Sign2Util {
         String params = Joiner.on(SIGNATURE_VALUE_SPLITTER).join(signatureValues).toLowerCase();
         //过滤无效字符
         params = escapeSignatureValue(params);
-
-        log.debug("签名文本:{}", params);
-
         //转换unicode
-        String unicodeText = unicode(params);
-
-        log.debug("签名文本unicode:{}", unicodeText);
-
-        return unicodeText;
+        return unicode(params);
     }
 
     /**
