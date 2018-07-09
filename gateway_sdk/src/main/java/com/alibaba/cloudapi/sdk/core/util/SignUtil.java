@@ -144,7 +144,7 @@ public class SignUtil {
             Predicate<String> signFilter = new Predicate<String>() {
                 @Override
                 public boolean apply(String input) {
-                    return input.startsWith(SdkConstant.CLOUDAPI_CA_HEADER_TO_SIGN_PREFIX_SYSTEM);
+                    return input.startsWith(SdkConstant.X_CA_SIGNATURE_HEADERS);
                 }
             };
 
@@ -153,7 +153,7 @@ public class SignUtil {
 
             // 所有加入签名的头的列表，需要用逗号分隔形成一个字符串，加入一个新HTTP头@"X-Ca-Signature-Headers"
             String signHeaders = Joiner.on(',').join(headersToSign.keySet());
-            headers.put(SdkConstant.CLOUDAPI_X_CA_SIGNATURE_HEADERS, signHeaders);
+            headers.put(SdkConstant.X_CA_SIGNATURE_HEADERS, signHeaders);
 
             // 拼装签名内容
             Joiner.MapJoiner joiner = Joiner.on(SdkConstant.CLOUDAPI_LF).withKeyValueSeparator(':');

@@ -35,8 +35,7 @@ public abstract class BaseApiClient {
     private final String appSecret;
     private final HttpClient httpClient;
 
-    protected final static Map<Class<? extends BaseApiClient>, BaseApiClient> instanceMap
-            = new ConcurrentHashMap<Class<? extends BaseApiClient>, BaseApiClient>();
+    protected final static Map<Class<? extends BaseApiClient>, BaseApiClient> instanceMap = new ConcurrentHashMap<Class<? extends BaseApiClient>, BaseApiClient>();
 
     public BaseApiClient(BuilderParams builderParams) {
         this.appKey = builderParams.getAppKey();
@@ -69,13 +68,13 @@ public abstract class BaseApiClient {
         /*
          * 设置请求头中的时间戳，以timeIntervalSince1970的形式
          */
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_TIMESTAMP, String.valueOf(current.getTime()));
+        apiReq.getHeaders().put(SdkConstant.X_CA_TIMESTAMP, String.valueOf(current.getTime()));
 
         /*
          * 请求放重放Nonce,15分钟内保持唯一,建议使用UUID
          */
         String nonceStr = UUID.randomUUID().toString();
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_NONCE, nonceStr);
+        apiReq.getHeaders().put(SdkConstant.X_CA_NONCE, nonceStr);
 
         /*
          * 设置请求头中的UserAgent
@@ -90,12 +89,12 @@ public abstract class BaseApiClient {
         /*
          * 设置请求头中的Api绑定的的AppKey
          */
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_KEY, appKey);
+        apiReq.getHeaders().put(SdkConstant.X_CA_KEY, appKey);
 
         /*
          * 设置签名版本号
          */
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_VERSION, SdkConstant.CLOUDAPI_CA_VERSION_VALUE);
+        apiReq.getHeaders().put(SdkConstant.X_CA_VERSION, SdkConstant.CLOUDAPI_CA_VERSION_VALUE);
 
         /*
          * 设置请求数据类型
@@ -113,25 +112,27 @@ public abstract class BaseApiClient {
              *  将body中的内容MD5算法加密后再采用BASE64方法Encode成字符串，放入HTTP头中
              *  做内容校验，避免内容在网络中被篡改
              */
-            apiReq.getHeaders().put(HttpConstant.CLOUDAPI_HTTP_HEADER_CONTENT_MD5,
-                    getMD5WithBase64Encode(apiReq.getBody()));
+            apiReq.getHeaders().put(HttpConstant.CLOUDAPI_HTTP_HEADER_CONTENT_MD5, getMD5WithBase64Encode(apiReq.getBody()));
         }
 
         /*
          *  将Request中的httpMethod、headers、path、queryParam、formParam合成一个字符串用hmacSha256算法双向加密进行签名
          *  签名内容放到Http头中，用作服务器校验
          */
-        String signStr = Sign2Util.sign(appKey, appSecret, current.getTime(), nonceStr);
-        apiReq.getHeaders().put(SdkConstant.CLOUDAPI_X_CA_SIGNATURE, signStr);
+        String signStr = Sign2Util.sign(appKey, appSecret, apiReq.getPath(), current.getTime(), nonceStr, apiReq.getQuerys());
+        apiReq.getHeaders().put(SdkConstant.X_CA_SIGNATURE, signStr);
 
-        apiReq.getHeaders().put(SdkConstant.X_CA_SIGNATURE_TYPE, "ACCESSKEY");
+
+        apiReq.getHeaders().put(SdkConstant.X_CA_SIGNATURE_TYPE, "MD5");
+
+        apiReq.getHeaders().put(SdkConstant.X_CA_AUTH_TYPE, "ACCESSKEY");
 
         for (Map.Entry<String, String> entry : apiReq.getHeaders().entrySet()) {
 
             // 因http协议头使用ISO-8859-1字符集，不支持中文，所以需要将header中的中文通过UTF-8.encode()，再使用ISO-8859-1.decode()后传输对应的，
             // 服务器端需要将所有header使用ISO-8859-1.encode()，再使用UTF-8.decode()，以还原中文
             if (StringUtils.isNotEmpty(entry.getValue())) {
-                entry.setValue(new String(entry.getValue().getBytes(SdkConstant.CLOUDAPI_ENCODING),SdkConstant.CLOUDAPI_HEADER_ENCODING));
+                entry.setValue(new String(entry.getValue().getBytes(SdkConstant.CLOUDAPI_ENCODING), SdkConstant.CLOUDAPI_HEADER_ENCODING));
             }
         }
 

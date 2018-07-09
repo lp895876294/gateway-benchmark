@@ -3,12 +3,13 @@ package com.alibaba.cloudapi.sdk.core.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 签名工具类
@@ -31,19 +32,30 @@ public class Sign2Util {
     /**
      * 签名方法
      */
-    public static String sign(String appKey, String appSecret, long signatureTime, String noce) {
-
-        List<String> signatureValues = Lists.newArrayList(appKey, appSecret, signatureTime + "", noce);
+    public static String sign(String appKey, String appSecret, String requestUri, long signatureTime, String noce, Map<String, String> requestParam) {
+        Map<String, String> treeMap = new TreeMap<String, String>(requestParam);
+        String requestParamStr = createQueryString(treeMap);
+        String encdStr = DigestUtils.md5DigestAsHex(requestParamStr.getBytes());
+        List<String> signatureValues = Lists.newArrayList(appKey, appSecret, requestUri, signatureTime + "", noce, encdStr);
 
         //过滤filter
         signatureValues = getFilteredValues(signatureValues);
         //对签名值进行排序
         sortSignatureValues(signatureValues);
+
         //获取签名文本
         String signatureText = getSignatureText(signatureValues);
         //加密后返回
         return encrypt(signatureText);
 
+    }
+
+    private static String createQueryString(Map<String, String> map) {
+        StringBuilder str = new StringBuilder();
+        for (String in : map.keySet()) {
+            str.append(in).append("=").append(map.get(in)).append("&");
+        }
+        return str.substring(0, str.length() - 1);
     }
 
     /**
