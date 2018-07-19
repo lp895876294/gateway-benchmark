@@ -77,8 +77,8 @@ public class ApacheHttpClient extends HttpClient {
 
         // 连接池配置
         connectionManager = new PoolingHttpClientConnectionManager();
-        connectionManager.setMaxTotal(params.getMaxRequests());
-        connectionManager.setDefaultMaxPerRoute(params.getMaxRequestsPerHost());
+        connectionManager.setMaxTotal(params.getMaxTotal());
+        connectionManager.setDefaultMaxPerRoute(params.getDefaultMaxPerRoute());
         builder.setConnectionManager(connectionManager);
         ApacheIdleConnectionCleaner.registerConnectionManager(connectionManager, params.getMaxIdleTimeMillis());
 
@@ -109,7 +109,7 @@ public class ApacheHttpClient extends HttpClient {
 
         // 异步
         if (params.getExecutorService() == null) {
-            executorService = new ThreadPoolExecutor(0, params.getMaxRequests(), DEFAULT_THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+            executorService = new ThreadPoolExecutor(0, params.getMaxTotal(), DEFAULT_THREAD_KEEP_ALIVE_TIME, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
                     new DeafultAsyncThreadFactory());
         } else {
             executorService = params.getExecutorService();

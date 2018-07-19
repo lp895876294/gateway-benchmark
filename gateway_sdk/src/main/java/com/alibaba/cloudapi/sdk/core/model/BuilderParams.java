@@ -13,11 +13,17 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import com.alibaba.cloudapi.sdk.core.BaseApiClient;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 用于构建sdkClient的Builder所需的参数
  *
  */
+@Getter
+@Setter
+@ToString
 public final class BuilderParams implements Serializable, Cloneable {
 
     /**
@@ -27,11 +33,18 @@ public final class BuilderParams implements Serializable, Cloneable {
     private String appSecret;
 
     /**
-     * 连接池
+     * 连接池 and dispatcher
      **/
-    private int maxIdleConnections = 5;
+
+    private int maxTotal = 10;
+    private int defaultMaxPerRoute = 50;
+
     private long maxIdleTimeMillis = 60 * 1000L;
     private long keepAliveDurationMillis = 5000L;
+
+    private Runnable idleCallback = null;
+    private ExecutorService executorService = null;
+
 
     /**
      * timeout
@@ -50,147 +63,11 @@ public final class BuilderParams implements Serializable, Cloneable {
     private HostnameVerifier hostnameVerifier = null;
 
     /**
-     * dispatcher
-     **/
-    private int maxRequests = 64;
-    private int maxRequestsPerHost = 5;
-    private Runnable idleCallback = null;
-    private ExecutorService executorService = null;
-
-    /**
      * extra params
      */
     private Map<String, Object> extParams = new HashMap<String, Object>();
 
     private Class<? extends BaseApiClient> apiClientClass;
-
-    public String getAppKey() {
-        return appKey;
-    }
-
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
-    }
-
-    public String getAppSecret() {
-        return appSecret;
-    }
-
-    public void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
-    }
-
-    public int getMaxIdleConnections() {
-        return maxIdleConnections;
-    }
-
-    public void setMaxIdleConnections(int maxIdleConnections) {
-        this.maxIdleConnections = maxIdleConnections;
-    }
-
-    public long getKeepAliveDurationMillis() {
-        return keepAliveDurationMillis;
-    }
-
-    public void setKeepAliveDurationMillis(long keepAliveDurationMillis) {
-        this.keepAliveDurationMillis = keepAliveDurationMillis;
-    }
-
-    public long getConnectionTimeoutMillis() {
-        return connectionTimeoutMillis;
-    }
-
-    public void setConnectionTimeoutMillis(long connectionTimeoutMillis) {
-        this.connectionTimeoutMillis = connectionTimeoutMillis;
-    }
-
-    public long getReadTimeoutMillis() {
-        return readTimeoutMillis;
-    }
-
-    public void setReadTimeoutMillis(long readTimeoutMillis) {
-        this.readTimeoutMillis = readTimeoutMillis;
-    }
-
-    public long getWriteTimeoutMillis() {
-        return writeTimeoutMillis;
-    }
-
-    public void setWriteTimeoutMillis(long writeTimeoutMillis) {
-        this.writeTimeoutMillis = writeTimeoutMillis;
-    }
-
-    public SSLSocketFactory getSslSocketFactory() {
-        return sslSocketFactory;
-    }
-
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        this.sslSocketFactory = sslSocketFactory;
-    }
-
-    public KeyManager[] getKeyManagers() {
-        return keyManagers;
-    }
-
-    public void setKeyManagers(KeyManager[] keyManagers) {
-        this.keyManagers = keyManagers;
-    }
-
-    public X509TrustManager[] getX509TrustManagers() {
-        return x509TrustManagers;
-    }
-
-    public void setX509TrustManagers(X509TrustManager[] x509TrustManagers) {
-        this.x509TrustManagers = x509TrustManagers;
-    }
-
-    public SecureRandom getSecureRandom() {
-        return secureRandom;
-    }
-
-    public void setSecureRandom(SecureRandom secureRandom) {
-        this.secureRandom = secureRandom;
-    }
-
-    public HostnameVerifier getHostnameVerifier() {
-        return hostnameVerifier;
-    }
-
-    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        this.hostnameVerifier = hostnameVerifier;
-    }
-
-    public int getMaxRequests() {
-        return maxRequests;
-    }
-
-    public void setMaxRequests(int maxRequests) {
-        this.maxRequests = maxRequests;
-    }
-
-    public int getMaxRequestsPerHost() {
-        return maxRequestsPerHost;
-    }
-
-    public void setMaxRequestsPerHost(int maxRequestsPerHost) {
-        this.maxRequestsPerHost = maxRequestsPerHost;
-    }
-
-    public Runnable getIdleCallback() {
-        return idleCallback;
-    }
-
-    public void setIdleCallback(Runnable idleCallback) {
-        this.idleCallback = idleCallback;
-    }
-
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
 
     public Object getExtParam(Object key) {return extParams.get(key);}
 
@@ -198,19 +75,4 @@ public final class BuilderParams implements Serializable, Cloneable {
 
     public boolean containsExtParam(Object key) {return extParams.containsKey(key);}
 
-    public long getMaxIdleTimeMillis() {
-        return maxIdleTimeMillis;
-    }
-
-    public void setMaxIdleTimeMillis(long maxIdleTimeMillis) {
-        this.maxIdleTimeMillis = maxIdleTimeMillis;
-    }
-
-    public Class<? extends BaseApiClient> getApiClientClass() {
-        return apiClientClass;
-    }
-
-    public void setApiClientClass(Class<? extends BaseApiClient> apiClientClass) {
-        this.apiClientClass = apiClientClass;
-    }
 }

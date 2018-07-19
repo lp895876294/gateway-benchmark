@@ -40,19 +40,6 @@ public abstract class BaseApiClientBuilder<Subclass extends BaseApiClientBuilder
         return this;
     }
 
-    /**
-     * Sets maxIdleConnections property of the connectionPool
-     *
-     * <p>This method is deprecated since 1.0.3, use {@link #maxIdleTimeMills(long)} instead</>
-     *
-     * @param maxIdleConnections The maximum number of idle connections for each address
-     * @return @{@linkplain BaseApiClientBuilder this builder}
-     */
-    @Deprecated()
-    public BaseApiClientBuilder<Subclass, TypeToBuild> maxIdleConnections(int maxIdleConnections) {
-        params.setMaxIdleConnections(maxIdleConnections);
-        return this;
-    }
 
     /**
      * Sets maxIdleTimeMills property of the connectionPool
@@ -113,7 +100,7 @@ public abstract class BaseApiClientBuilder<Subclass extends BaseApiClientBuilder
 
     /**
      * Each client uses an {@link ExecutorService} to run calls internally. If you supply your
-     * own executor, it should be able to run {@linkplain #maxRequests(int) the configured maximum} number
+     * own executor, it should be able to run {@linkplain # maxRequests(int) the configured maximum} number
      * of calls concurrently.
      *
      * @param executorService your own executor
@@ -146,8 +133,8 @@ public abstract class BaseApiClientBuilder<Subclass extends BaseApiClientBuilder
      * @param maxRequests
      * @return @{@linkplain BaseApiClientBuilder this builder}
      */
-    public BaseApiClientBuilder<Subclass, TypeToBuild> maxRequests(int maxRequests) {
-        params.setMaxRequests(maxRequests);
+    public BaseApiClientBuilder<Subclass, TypeToBuild> maxTotal(int maxRequests) {
+        params.setMaxTotal(maxRequests);
         return this;
     }
 
@@ -160,11 +147,11 @@ public abstract class BaseApiClientBuilder<Subclass extends BaseApiClientBuilder
      * <p>If more than {@code maxRequestsPerHost} requests are in flight when this is invoked, those
      * requests will remain in flight.
      *
-     * @param maxRequestsPerHost connect time out threshold in millisecond
+     * @param defaultMaxPerRoute connect time out threshold in millisecond
      * @return @{@linkplain BaseApiClientBuilder this builder}
      */
-    public BaseApiClientBuilder<Subclass, TypeToBuild> maxRequestsPerHost(int maxRequestsPerHost) {
-        params.setMaxRequestsPerHost(maxRequestsPerHost);
+    public BaseApiClientBuilder<Subclass, TypeToBuild> defaultMaxPerRoute(int defaultMaxPerRoute) {
+        params.setDefaultMaxPerRoute(defaultMaxPerRoute);
         return this;
     }
 
