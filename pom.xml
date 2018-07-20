@@ -24,8 +24,10 @@
         <module>zuul2</module>
         <module>netty</module>
         <module>spring_netty</module>
-        <module>spring_consul_provider1</module>
-	</modules>
+        <module>gateway_sdk</module>
+        <module>gateway_sdk_spring</module>
+        <module>gateway_sdk_demo</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
