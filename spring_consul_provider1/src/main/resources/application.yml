@@ -1,0 +1,7 @@
+server:
+  port: 7030
+
+jmx:
+  rmi:
+    port: 17030
+
