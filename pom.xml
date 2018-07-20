@@ -24,6 +24,7 @@
         <module>zuul2</module>
         <module>netty</module>
         <module>spring_netty</module>
+        <module>spring_consul_provider1</module>
 	</modules>
 
     <dependencyManagement>

@@ -45,6 +45,7 @@ public class AppNettyAutoConfiguration implements InitializingBean {
         EventLoopGroup workerGroup = new NioEventLoopGroup(4);
         try {
             ServerBootstrap b = new ServerBootstrap();
+            //服务器默认同时保持1024个sync状态的连接
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)

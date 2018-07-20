@@ -3,6 +3,8 @@ package com.framework.sc.netty.handler.demo;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -17,14 +19,20 @@ public class ChannelOutboundHandler1 extends BaseChannelOutboundHandler {
             return ;
         }
 
-        log.info("{} -> write , msg={}" , name , msg.getClass().getName());
-        super.write(ctx, msg, promise);
+        log.info(ctx.channel().id().asLongText()+"-> write , msg={}" , msg.getClass().getName());
+        super.write(ctx, msg, promise.addListener(new FutureListener<Object>() {
+            @Override
+            public void operationComplete(Future<Object> future) throws Exception {
+                ctx.close() ;
+            }
+        }));
+
+
     }
 
     @Override
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         super.close(ctx, promise);
-
-        log.info("{} -> close" , name);
+        log.info(ctx.channel().id().asLongText()+"-> close");
     }
 }

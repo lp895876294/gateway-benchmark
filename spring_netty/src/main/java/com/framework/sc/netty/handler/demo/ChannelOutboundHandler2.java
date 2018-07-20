@@ -22,15 +22,14 @@ public class ChannelOutboundHandler2 extends BaseChannelOutboundHandler {
         promise.addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
-                System.out.println("打印异常信息->");
+//                System.out.println("打印异常信息->");
                 if( !future.isSuccess() ){
                     future.cause().printStackTrace();
                 }
-                ctx.writeAndFlush("{\"success\":false}") ;
-                ctx.close() ;
+//                ctx.writeAndFlush("{\"success\":false}") ;
             }
         }) ;
-        log.info("{} -> write , msg={}" , name , msg.getClass().getName());
+        log.info(ctx.channel().id().asLongText()+"-> write , msg={}" , msg.getClass().getName());
 //        throw new IllegalArgumentException("outbound异常") ;
 //        promise.setFailure(new IllegalArgumentException("outbound自定义异常")) ;
         super.write(ctx, msg, promise);

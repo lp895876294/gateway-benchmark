@@ -3,6 +3,7 @@ package com.framework.sc.netty.handler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -28,6 +29,8 @@ public class GWChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         ChannelPipeline p = ch.pipeline();
         p.addLast("codec", new HttpServerCodec()) ;
+        //将httpContent与Httprequest合并起来之后，一起传输
+        p.addLast( new HttpObjectAggregator(8192) ) ;
         channelHandlers.stream().forEach( channelHandler -> {
             log.info("添加channel -> {}" , channelHandler.getClass().getSimpleName() );
             p.addLast( channelHandler.getClass().getSimpleName() , channelHandler ) ;

@@ -16,21 +16,20 @@ public class ChannelInboundHandler3 extends ChannelInboundHandlerAdapter impleme
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        log.info("{} -> channelRead , msg={}" , "ChannelInboundHandler3" , msg.getClass().getName());
+        log.info(ctx.channel().id().asLongText()+"-> channelRead , msg={}" , msg.getClass().getName());
         ctx.fireChannelRead(msg) ;
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
         super.channelWritabilityChanged(ctx);
-        log.info("ChannelInboundHandler3 -> channelWritabilityChanged ");
+        log.info(ctx.channel().id().asLongText()+"-> channelWritabilityChanged ");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 //        super.exceptionCaught(ctx, cause);
-        log.info("拦截inbound中所有异常 -> " + ctx.channel().id().asLongText() );
-        System.out.println("已经已经拦截，开始打印异常->");
+        log.info(ctx.channel().id().asLongText()+"-> 拦截inbound中所有异常 -> " + ctx.channel().id().asLongText() );
         cause.printStackTrace();
         ctx.close();
     }
